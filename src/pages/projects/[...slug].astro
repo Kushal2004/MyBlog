@@ -7,6 +7,8 @@ import { readingTime } from "@lib/utils";
 import BackToPrevious from "@components/BackToPrevious.astro";
 import Link from "@components/Link.astro";
 import TableOfContents from "@components/TableOfContents.astro";
+import Giscus from "@components/Giscus.astro";
+import PostNavigation from "@components/PostNavigation.astro";
 
 export async function getStaticPaths() {
   const projects = (await getCollection("projects"))
@@ -62,6 +64,9 @@ const { Content, headings } = await project.render();
     <TableOfContents headings={headings} />
     <article class="animate">
       <Content />
+      <div class="mt-24">
+        <Giscus />
+      </div>
     </article>
   </Container>
 </Layout>

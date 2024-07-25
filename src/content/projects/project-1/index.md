@@ -1,79 +1,123 @@
 ---
-title: "Astro Sphere"
-description: "Portfolio and blog build with astro."
-date: "03/18/2024"
-demoURL: "https://astro-sphere-demo.vercel.app"
-repoURL: "https://github.com/markhorn-dev/astro-sphere"
+title: "Email App"
+description: "Email Microservice"
+date: "03/06/2024"
+demoURL: ""
+repoURL: "https://github.com/Kushal2004/email-app"
 ---
 
-![Astro Sphere](/astro-sphere.jpg)
+## Email Attachment Service
 
-Astro Sphere is a static, minimalist, lightweight, lightning fast portfolio and blog theme based on Mark Horn's personal website.
+This Node.js application allows users to send emails with attachments. If the attachment is blocked due to security reasons, the file is uploaded to Google Drive and a link to the file is sent instead.
 
-It is primarily Astro, Tailwind and Typescript, with a very small amount of SolidJS for stateful components.
 
-## 🚀 Deploy your own
+## Installation
 
-<div class="flex gap-2">
-  <a target="_blank" aria-label="Deploy with Vercel" href="https://vercel.com/new/clone?repository-url=https://github.com/markhorn-dev/astro-sphere">
-    <img src="/deploy_vercel.svg" />
-  </a>
-  <a target="_blank" aria-label="Deploy with Netlify" href="https://app.netlify.com/start/deploy?repository=https://github.com/markhorn-dev/astro-sphere">
-    <img src="/deploy_netlify.svg" />
-  </a>
-</div>
+ ### Prerequisites
+- [Node.js](https://nodejs.org/) (v14 or higher)
+- [Docker](https://www.docker.com/) (optional, for containerization)
 
-## 📋 Features
+ ### Clone the Repository
+```bash
+git clone https://github.com/Kushal2004/email-app.git
 
-- ✅ 100/100 Lighthouse performance
-- ✅ Responsive
-- ✅ Accessible
-- ✅ SEO-friendly
-- ✅ Typesafe
-- ✅ Minimal style
-- ✅ Light/Dark Theme
-- ✅ Animated UI
-- ✅ Tailwind styling
-- ✅ Auto generated sitemap
-- ✅ Auto generated RSS Feed
-- ✅ Markdown support
-- ✅ MDX Support (components in your markdown)
-- ✅ Searchable content (posts and projects)
+cd email-attachment-service/backend
+```
 
-## 💯 Lighthouse score
+### Install Dependencies
 
-![Astro Sphere Lighthouse Score](/lighthouse-nano.jpg)
+```bash
+npm install
+```
 
-## 🕊️ Lightweight
+## Usage
+### Running the Application Locally
+1. Set up environment variables:
+Create a .env file in the root of the backend directory and add the following:
 
-All pages under 100kb (including fonts)
+```bash
+EMAIL_USER=your-email@gmail.com
+EMAIL_PASS=your-email-password
+PORT=5000
+```
+2. Add Google Drive credentials:
+Create a credentials.json file in the root of the backend directory and add the following:
+```bash
+    {
+    "web": {
+        "client_id": "",
+        "project_id": "",
+        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+        "token_uri": "https://oauth2.googleapis.com/token",
+        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+        "client_secret": "",
+        "redirect_uris": [
+            "http://localhost:3000/oauth2callback/"
+        ]
+    }
 
-## ⚡︎ Fast
+```
 
-Rendered in ~40ms on localhost
+3. Start the application
+```bash
+ node app.js
+```
 
-## 📄 Configuration
+### Running the Application with Docker
 
-The blog posts on the demo serve as the documentation and configuration.
+1. docker-compose.yml
+The `docker-compose.yml` sets up the Docker services:
 
-## 💻 Commands
+```bash
+version: '3'
+services:
+  app:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - EMAIL_USER=your-email@gmail.com
+      - EMAIL_PASS=your-email-password
+      - PORT=5000
+    volumes:
+      - .:/usr/src/app
 
-All commands are run from the root of the project, from a terminal:
+```
+2. Build and run the Docker container:
 
-Replace npm with your package manager of choice. `npm`, `pnpm`, `yarn`, `bun`, etc
+```bash
+docker-compose up --build
 
-| Command                   | Action                                            |
-| :------------------------ | :------------------------------------------------ |
-| `npm install`             | Installs dependencies                             |
-| `npm run dev`             | Starts local dev server at `localhost:4321`       |
-| `npm run sync`            | Generates TypeScript types for all Astro modules. |
-| `npm run build`           | Build your production site to `./dist/`           |
-| `npm run preview`         | Preview your build locally, before deploying      |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check`  |
-| `npm run astro -- --help` | Get help using the Astro CLI                      |
-| `npm run lint`            | Run ESLint                                        |
-| `npm run lint:fix`        | Auto-fix ESLint issues                            |
+```
+2. The application will be accessible at http://localhost:5000.
 
-## 🏛️ License
 
-MIT
+## API Endpoints
+
+
+### Send Email with Attachment
+
+This API endpoint allows you to send an email with an attachment. If the attachment is blocked, it uploads the file to Google Drive and sends a link to the recipient.
+
+### Endpoint
+
+- **URL:** `/api/email/send`
+- **Method:** `POST`
+- **Description:** Sends an email with an attachment. If the attachment is blocked, it uploads the file to Google Drive and sends a link.
+  
+### Request Body Parameters
+
+- `recipientEmail` (string): The recipient's email address.
+- `subject` (string): The subject of the email.
+- `text` (string): The body of the email.
+- `attachment` (file): The attachment file.
+
+### Example Request
+
+```bash
+curl -X POST http://localhost:5000/api/email/send \
+  -F "recipientEmail=example@example.com" \
+  -F "subject=Test Email" \
+  -F "text=This is a test email" \
+  -F "attachment=@path/to/your/file.zip"
+  ```
